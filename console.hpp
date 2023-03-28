@@ -16,7 +16,7 @@ namespace util{
         enum class shape_t {user,block,underline,bar} ;
         enum class attr_t{normal,bold,underline,inverse};
         enum class cursor_t{normal,blink};
-        enum class color_t{black=30,red,green,yellow,blue,magenta,cyan,white};
+        enum class color_t{black=30,red,green,yellow,blue,magenta,cyan,white,def=39};
         enum class layer_t{foreground,background};
         enum class buffer_t{primary,secondary};
         
