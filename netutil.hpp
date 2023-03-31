@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <string>
+#include <cstring>
 #include "sock.hpp"      // We include this, so users can just include one hpp file.
 namespace util {
     namespace net {

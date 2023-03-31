@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <cstdio>
+#include <cstring>
 
 #if !defined(_WIN32)
 #include <sys/mman.h>
