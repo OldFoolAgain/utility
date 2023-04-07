@@ -282,9 +282,8 @@ namespace util {
     /// - Returns: Returns a string formatted based on the arguments/format statment
     /// - Throws: If the conversion can not be performed, throws a runtime error.
     template <typename T>
-    auto ntos(T value, int radix = 10, bool prefix = false,  int size = 0, char pad = '0') -> std::string {
-        // Check to ensure it isn't a bool, and is integral
-        if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool>) {
+    typename std::enable_if_t<std::is_integral_v<T> && !std::is_same_v<T, bool>, std::string>
+    ntos(T value, int radix = 10, bool prefix = false,  int size = 0, char pad = '0') {
             // first, thing we need to convert the value to a string
             std::array<char, max_characters_in_number> str;
             
@@ -336,7 +335,22 @@ namespace util {
                 //return std::string();
             }
             
+    }
+    //=======================================================================
+    /// Convert a number to a string, with options on radix,prefix,size,pad
+    /// - Parameters:
+    ///     - value: The value one is trying to convert to a string
+    /// - Returns: Returns a string (true/false);
+    template <typename T>
+    typename std::enable_if_t<std::is_integral_v<T> && std::is_same_v<T, bool>, std::string>
+    ntos(T value) {
+        // first, thing we need to convert the value to a string
+        std::array<char, max_characters_in_number> str;
+        if (value){
+            
+            return "true";
         }
+        return "false" ;
     }
     //=======================================================================
     /// Convert a string to a number, with options on radix
@@ -500,7 +514,7 @@ namespace util {
         auto time = std::chrono::system_clock::to_time_t(t);
         tm myvalue ;
 #if defined(_MSC_VER)
-        auto status = localtime_s(&myvalue,time) ;
+        auto status = ::localtime_s(&myvalue,&time) ;
 #else
         ::localtime_r(&time,&myvalue) ;
 #endif
