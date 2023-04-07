@@ -337,7 +337,7 @@ namespace util {
             
     }
     //=======================================================================
-    /// Convert a number to a string, with options on radix,prefix,size,pad
+    /// Convert a bool to a string,
     /// - Parameters:
     ///     - value: The value one is trying to convert to a string
     /// - Returns: Returns a string (true/false);
@@ -345,7 +345,6 @@ namespace util {
     typename std::enable_if_t<std::is_integral_v<T> && std::is_same_v<T, bool>, std::string>
     ntos(T value) {
         // first, thing we need to convert the value to a string
-        std::array<char, max_characters_in_number> str;
         if (value){
             
             return "true";
@@ -363,10 +362,11 @@ namespace util {
     typename std::enable_if_t<std::is_integral_v<T> && !std::is_same_v<T, bool>, T>
     ston(const std::string_view str_value, int radix = 10) {
         auto value = T{0};
+        //auto svalue = std::string(str_value);
         if (!str_value.empty()) {
             if (str_value.size() < 2) {
                 //std::from_chars(str_value.data(),str_value.data() + str_value.size(), value,radix);
-                std::from_chars(str_value.begin(),str_value.end(), value,radix);
+                std::from_chars(str_value.data(), str_value.data()+ str_value.size(), value, radix);
             }
             else if (std::isalpha(static_cast<int>(static_cast<int>(str_value[1])))) {
                 // This has a "radix indicator"
@@ -374,17 +374,17 @@ namespace util {
                     case 'b':
                     case 'B':
                         //std::from_chars(str_value.data() + 2,str_value.data() + str_value.size(), value,2);
-                        std::from_chars(str_value.begin() + 2,str_value.end() + str_value.size(), value,2);
+                        std::from_chars(str_value.data() + 2, str_value.data() + str_value.size(), value,2);
                         break;
                     case 'x':
                     case 'X':
                         //std::from_chars(str_value.data() + 2,str_value.data() + str_value.size(), value,16);
-                        std::from_chars(str_value.begin() + 2,str_value.end() + str_value.size(), value,16);
+                        std::from_chars(str_value.data() + 2, str_value.data() + str_value.size(), value,16);
                        break;
                     case 'o':
                     case 'O':
                         //std::from_chars(str_value.data() + 2,str_value.data() + str_value.size(), value,8);
-                        std::from_chars(str_value.begin() + 2,str_value.end() + str_value.size(), value,8);
+                        std::from_chars(str_value.data() + 2, str_value.data() + str_value.size(), value,8);
                        break;
                     default:
                         // we dont do anything, we dont undertand so let value be 0
@@ -394,7 +394,7 @@ namespace util {
             }
             else {
                 //auto [ptr,ec] = std::from_chars(str_value.data(),str_value.data() + str_value.size(), value,radix);
-                auto [ptr,ec] = std::from_chars(str_value.begin(),str_value.end(), value,radix);
+                auto [ptr,ec] = std::from_chars(str_value.data(), str_value.data()+ str_value.size(), value, radix);
                if (ec == std::errc::invalid_argument) {
                     throw std::runtime_error("Invalid argument for number conversion from string.");
                 }
@@ -423,6 +423,28 @@ namespace util {
             return true;
         }
         return false;
+    }
+    //=======================================================================
+    /// Convert a string to a real
+    /// - Parameters:
+    ///     - value: The value one is trying to convert to a string
+    /// - Returns: a boolean of true if the text equals the true value (or if it converts as a number to not 0)
+    /// - Throws: If unable to convert it, or has a format error, throws a runtime error.
+    template <typename T>
+    typename std::enable_if_t<std::is_floating_point_v<T>, T>
+        ston(const std::string_view str_value) {
+        // If string empty, we return false
+        auto value = T{ 0.0 };
+        if (str_value.empty()) {
+            return value;
+        }
+        auto [ptr, ec] = std::from_chars(str_value.data(), str_value.data() + str_value.size(), value);
+        if (ec == std::errc::invalid_argument) {
+            throw std::runtime_error("Invalid argument for number conversion from string.");
+        }
+        else if (ec == std::errc::result_out_of_range) {
+            throw std::runtime_error("Out of range for number conversion from string.");
+        }
     }
 
     //=======================================================================

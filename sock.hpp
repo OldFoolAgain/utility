@@ -18,7 +18,7 @@ constexpr auto socket_error = -1 ;
 
 #else
 #include <winsock2.h>
-using descrip_t =  SOCKET;
+using descrip_t =SOCKET;
 using amount_t = int;
 
 constexpr auto invalid_socket = INVALID_SOCKET;

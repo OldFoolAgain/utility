@@ -30,7 +30,7 @@ namespace util {
         
         //========================================================================
         auto socket_t::create() ->void {
-            fd = ::socket(static_cast<int>(type),SOCK_STREAM,0);
+            this->fd = ::socket(static_cast<int>(type),SOCK_STREAM,0);
             if (fd == socket_error){
 #if defined(_WIN32)
                 auto error = WSAGetLastError();
@@ -328,8 +328,11 @@ namespace util {
             fd_set fdset;
             FD_ZERO(&fdset);
             FD_SET(fd,&fdset);
-            status = ::connect(fd,res->ai_addr,res->ai_addrlen);
-            
+#if defined(_WIN32)
+            status = ::connect(fd,res->ai_addr,static_cast<socklen_t>(res->ai_addrlen));
+#else 
+            status = ::connect(fd, res->ai_addr, res->ai_addrlen);
+#endif
             if (status ==socket_error){
 #if defined(_WIN32)
                 auto failure = WSAGetLastError();
@@ -338,7 +341,7 @@ namespace util {
 #endif
                 if (failure == blockerror){
                     // Ok, it might be ok still
-                    status = ::select(fd+1, &fdset,nullptr, nullptr, &delay);
+                    status = ::select(static_cast<int>(fd+1), &fdset,nullptr, nullptr, &delay);
                     if ((status == 0) || (status == socket_error)){
                         try {
                             // Ok, the socket timed out.  We close the socket

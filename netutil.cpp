@@ -19,6 +19,7 @@
 
 using namespace std::string_literals;
 
+
 namespace util {
     namespace net {
         //=================================================================================
@@ -57,7 +58,7 @@ namespace util {
             error = WSAGetLastError();
             FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPTSTR>(&buffer), 0, NULL);
             if (buffer != NULL) {
-                value = buffer;
+                value = *buffer;
                 LocalFree(buffer);
             }
 #endif
