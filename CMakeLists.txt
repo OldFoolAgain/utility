@@ -53,6 +53,8 @@ if (WIN32)
 
 	target_compile_definitions( utility PRIVATE
 		_LIB
+		NOMINMAX
+		WIN32_LEAN_AND_MEAN
 		$<$<CONFIG:Release>:NDEBUG>
 		$<$<CONFIG:Debug>:_DEBUG>
 	)
