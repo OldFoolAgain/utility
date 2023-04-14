@@ -12,9 +12,10 @@ namespace util {
     class filemap_t {
         std::filesystem::path path ;
     public:
+        bool no_unmap_in_destructor ;
         //=================================================================================
         /// Constructor for filemap. Makes an empty filemap
-        filemap_t():ptr(nullptr),length(0){}
+        filemap_t():ptr(nullptr),length(0),no_unmap_in_destructor(false){}
 
         //=================================================================================
         /// Destructor for filemap

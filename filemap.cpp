@@ -23,7 +23,7 @@ namespace util {
     //=================================================================================
     //=================================================================================
     filemap_t::~filemap_t() {
-        if (ptr != nullptr){
+        if (ptr != nullptr && !no_unmap_in_destructor){
             if (!unmap(true)){
                 std::cerr <<"Unable to unmap: "s + path.string()<<std::endl;
             }
