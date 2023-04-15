@@ -12,10 +12,11 @@ namespace util {
     class filemap_t {
         std::filesystem::path path ;
     public:
-        bool no_unmap_in_destructor ;
+        filemap_t(const filemap_t&) = delete ;
+        auto operator=(const filemap_t&)->filemap_t& = delete ;
         //=================================================================================
         /// Constructor for filemap. Makes an empty filemap
-        filemap_t():ptr(nullptr),length(0),no_unmap_in_destructor(false){}
+        filemap_t():ptr(nullptr),length(0){}
 
         //=================================================================================
         /// Destructor for filemap
