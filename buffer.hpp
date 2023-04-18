@@ -18,6 +18,7 @@ namespace util {
      position in the buffer.
      **/
     class buffer_t{
+    protected:
         const void *read_data ; // Ptr to the data we read
         void *write_data ; // Ptr to the data we write
         mutable std::size_t current_position ;
